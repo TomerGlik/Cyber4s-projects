@@ -28,15 +28,27 @@ td {
   vertical-align: middle;
 }
 
-table tr:nth-child(2n + 1) td:nth-child(2n) {
-  background-color: rgb(35, 35, 35)
+table {
+  margin: 20px;
 }
 
-table tr:nth-child(2n) td:nth-child(2n + 1) {
-  background-color: rgb(35, 35, 35)
+.light-cell {
+  background: rgb(211, 210, 210);
+  width: 45px;
+  height: 45px;
+}
+
+.dark-cell {
+  background: rgb(63, 63, 63);
+  width: 45px;
+  height: 45px;
 }
 
 img {
   -webkit-filter: drop-shadow(1px 1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px -1px 0 white);
   filter: drop-shadow(1px 1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px -1px 0 white);
+}
+
+.selected {
+  background-color: rgb(122, 189, 34);
 }

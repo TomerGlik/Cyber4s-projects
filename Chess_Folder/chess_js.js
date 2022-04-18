@@ -1,25 +1,66 @@
 const BOARD_SIZE = 8;
-const WHITE_TYPE = 'white_rotated';
-const DARK_TYPE = 'dark';
+const WHITE_PLAYER = 'white';
+const DARK_PLAYER = 'dark';
 
-function addImage(cell, type, name) {
+let selectedCell;
+let pieces = [];
+
+class Piece {
+    constructor(row, col, type, player) {
+        this.row = row;
+        this.col = col;
+        this.type = type;
+        this.player = player;
+    }
+}
+function addPieces(result,row,player){
+    result.push(new Piece(0, 0, "rook", player))
+    result.push(new Piece(0, 1, "knight", WHITE_PLAYER))
+    result.push(new Piece(0, 2, "bishop", WHITE_PLAYER))
+    result.push(new Piece(0, 5, "bishop", WHITE_PLAYER))
+    result.push(new Piece(0, 3, "queen", WHITE_PLAYER))
+    result.push(new Piece(0, 4, "king", WHITE_PLAYER))
+    result.push(new Piece(0, 6, "knight", WHITE_PLAYER))
+    result.push(new Piece(0, 7, "rook", WHITE_PLAYER))
+}
+
+function getInitialBoard() {
+    let result = [];
+    result.push(new Piece(0, 0, "rook", WHITE_PLAYER))
+    result.push(new Piece(0, 1, "knight", WHITE_PLAYER))
+    result.push(new Piece(0, 2, "bishop", WHITE_PLAYER))
+    result.push(new Piece(0, 5, "bishop", WHITE_PLAYER))
+    result.push(new Piece(0, 3, "queen", WHITE_PLAYER))
+    result.push(new Piece(0, 4, "king", WHITE_PLAYER))
+    result.push(new Piece(0, 6, "knight", WHITE_PLAYER))
+    result.push(new Piece(0, 7, "rook", WHITE_PLAYER))
+    for (let i = 0; i < BOARD_SIZE; i++) {
+        result.push(new Piece(1, i, "pawn", WHITE_PLAYER))
+        result.push(new Piece(6, i, "pawn", DARK_PLAYER))
+    }
+    result.push(new Piece(7, 0, "rook", DARK_PLAYER))
+    result.push(new Piece(7, 1, "knight", DARK_PLAYER))
+    result.push(new Piece(7, 2, "bishop", DARK_PLAYER))
+    result.push(new Piece(7, 3, "queen", DARK_PLAYER))
+    result.push(new Piece(7, 4, "king", DARK_PLAYER))
+    result.push(new Piece(7, 5, "bishop", DARK_PLAYER))
+    result.push(new Piece(7, 6, "knight", DARK_PLAYER))
+    result.push(new Piece(7, 7, "rook", DARK_PLAYER))
+    return result;
+}
+
+function addImage(cell, player, name) {
     const image = document.createElement('img');
-    image.src = 'images/' + type + '/' + name + '.png';
+    image.src = 'images/' + player + '/' + name + '.png';
     cell.appendChild(image);
 }
 
-function addImageByIndex(cell, type, index) {
-    if (index === 0 || index === 7) {
-        addImage(cell, type, 'rook');
-    } else if (index === 1 || index === 6) {
-        addImage(cell, type, 'knight');
-    } else if (index === 2 || index === 5) {
-        addImage(cell, type, 'bishop');
-    } else if (index === 3) {
-        addImage(cell, type, 'king');
-    } else if (index === 4) {
-        addImage(cell, type, 'queen');
+function onCellClick(event) {
+    if (selectedCell !== undefined) {
+        selectedCell.classList.remove('selected');
     }
+    selectedCell = event.currentTarget;
+    selectedCell.classList.add('selected');
 }
 
 function createChessBoard() {
@@ -35,17 +76,13 @@ function createChessBoard() {
             } else {
                 cell.className = 'dark-cell';
             }
-
-            if (i === 0) {
-                addImageByIndex(cell, WHITE_TYPE, j);
-            } else if (i === 1) {
-                addImage(cell, WHITE_TYPE, 'pawn');
-            } else if (i === 6) {
-                addImage(cell, DARK_TYPE, 'pawn');
-            } else if (i === 7) {
-                addImageByIndex(cell, DARK_TYPE, j);
-            }
+            cell.addEventListener('click', onCellClick);
         }
+    }
+    pieces = getInitialBoard();
+
+    for (let piece of pieces) {
+        addImage(table1.rows[piece.row].cells[piece.col], piece.player, piece.type);
     }
 }
 
