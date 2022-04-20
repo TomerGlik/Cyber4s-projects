@@ -1,21 +1,20 @@
 table {
-  margin: 20px;
+  margin: 50px;
 }
 
 .white {
-  height: 50px;
-  width: 50px;
+  height: 60px;
+  width: 60px;
   background-color: rgb(156, 156, 156);
   padding: auto;
 }
 
 .black {
-  height: 20px;
-  width: 20px;
+  height: 60px;
+  width: 60px;
   background-color: rgb(12, 2, 2);
-  margin: 0px;
-  padding: auto;
 }
+
 .possible-move {
   background: rgba(122, 224, 127, 0.493)
 }
@@ -23,8 +22,14 @@ table {
 img {
   -webkit-filter: drop-shadow(1px 1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px -1px 0 white);
   filter: drop-shadow(1px 1px 0 white) drop-shadow(-1px 1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px -1px 0 white);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .selected {
   background-color: rgb(122, 189, 34);
+}
+
+td {
+  text-align: center;
 }
