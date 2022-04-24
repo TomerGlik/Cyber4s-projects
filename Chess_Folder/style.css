@@ -2,17 +2,20 @@ table {
   margin: 50px;
 }
 
-.white {
-  height: 60px;
-  width: 60px;
-  background-color: rgb(156, 156, 156);
-  padding: auto;
+table {
+  margin: 20px;
 }
 
-.black {
-  height: 60px;
-  width: 60px;
-  background-color: rgb(12, 2, 2);
+.light-cell {
+  background: rgb(211, 210, 210);
+  width: 45px;
+  height: 45px;
+}
+
+.dark-cell {
+  background: rgb(63, 63, 63);
+  width: 45px;
+  height: 45px;
 }
 
 .possible-move {
