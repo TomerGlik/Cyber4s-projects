@@ -173,15 +173,6 @@ class BoardData {
     }
   }
 
-  isEmpty(row, col) {
-    return this.getPiece(row, col) === undefined;
-  }
-
-  isPlayer(row, col, player) {
-    const piece = this.getPiece(row, col);
-    return piece !== undefined && piece.player === player;
-  }
-
   removePiece(row, col) {
     for (let i = 0; i < this.pieces.length; i++) {
       const piece = this.pieces[i];
@@ -191,41 +182,35 @@ class BoardData {
       }
     }
   }
-}
 
-function getInitialPieces() {
-  let result = [];
-
-  addFirstRowPieces(result, 0, WHITE_PLAYER);
-  addFirstRowPieces(result, 7, BLACK_PLAYER);
-
-  for (let i = 0; i < BOARD_SIZE; i++) {
-    result.push(new Piece(1, i, PAWN, WHITE_PLAYER));
-    result.push(new Piece(6, i, PAWN, BLACK_PLAYER));
+  isEmpty(row, col) {
+    return this.getPiece(row, col) === undefined;
   }
-  return result;
+
+  isPlayer(row, col, player) {
+    const piece = this.getPiece(row, col);
+    return piece !== undefined && piece.player === player;
+  }
 }
 
-function addFirstRowPieces(result, row, player) {
-  result.push(new Piece(row, 0, ROOK, player));
-  result.push(new Piece(row, 1, KNIGHT, player));
-  result.push(new Piece(row, 2, BISHOP, player));
-  result.push(new Piece(row, 3, KING, player));
-  result.push(new Piece(row, 4, QUEEN, player));
-  result.push(new Piece(row, 5, BISHOP, player));
-  result.push(new Piece(row, 6, KNIGHT, player));
-  result.push(new Piece(row, 7, ROOK, player));
+// Tries to actually make a move. Returns true if successful.
+function tryMove(piece, row, col) {
+  const possibleMoves = piece.getPossibleMoves(boardData);
+  // possibleMoves looks like this: [[1,2], [3,2]]
+  for (const possibleMove of possibleMoves) {
+    // possibleMove looks like this: [1,2]
+    if (possibleMove[0] === row && possibleMove[1] === col) {
+      // There is a legal move
+      boardData.removePiece(row, col);
+      piece.row = row;
+      piece.col = col;
+      return true;
+    }
+  }
+  return false;
 }
 
-// Adds an image to cell with the piece's image
-function addImage(cell, player, name) {
-  const image = document.createElement('img');
-  image.src = 'images/' + player + '/' + name + '.png';
-  cell.appendChild(image);
-}
-
-function showMovesForPiece(row, col) {
-  console.log('showMovesForPiece');
+function tryUpdateSelectedPiece(row, col) {
   // Clear all previous possible moves
   for (let i = 0; i < BOARD_SIZE; i++) {
     for (let j = 0; j < BOARD_SIZE; j++) {
@@ -251,41 +236,20 @@ function showMovesForPiece(row, col) {
 function onCellClick(event, row, col) {
   // selectedPiece - The current selected piece (selected in previous click)
   // row, col - the currently clicked cell - it may be empty, or have a piece.
-  if (selectedPiece === undefined) {
-    showMovesForPiece(row, col);
+  if (selectedPiece !== undefined && tryMove(selectedPiece, row, col)) {
+    selectedPiece = undefined;
+    // Recreate whole board - this is not efficient, but doesn't affect user experience
+    createChessBoard(boardData);
   } else {
-    // TODO: Refactor based on Yuval's suggestion
-    if (tryMove(selectedPiece, row, col)) {
-      selectedPiece = undefined;
-      // Recreate whole board - this is not efficient, but doesn't affect user experience
-      createChessBoard(boardData);
-    } else {
-      showMovesForPiece(row, col);
-    }
+    tryUpdateSelectedPiece(row, col);
   }
 }
 
-// Tries to actually make a move. Returns true if successful.
-function tryMove(piece, row, col) {
-  const possibleMoves = piece.getPossibleMoves(boardData);
-  // possibleMoves looks like this: [[1,2], [3,2]]
-  for (const possibleMove of possibleMoves) {
-    // possibleMove looks like this: [1,2]
-    if (possibleMove[0] === row && possibleMove[1] === col) {
-      // There is a legal move
-      boardData.removePiece(row, col);
-      piece.row = row;
-      piece.col = col;
-      return true;
-    }
-  }
-  return false;
-}
-
-function initGame() {
-  // Create list of pieces (32 total)
-  boardData = new BoardData(getInitialPieces());
-  createChessBoard(boardData);
+// Adds an image to cell with the piece's image
+function addImage(cell, player, name) {
+  const image = document.createElement('img');
+  image.src = 'images/' + player + '/' + name + '.png';
+  cell.appendChild(image);
 }
 
 function createChessBoard(boardData) {
@@ -316,6 +280,36 @@ function createChessBoard(boardData) {
     const cell = table.rows[piece.row].cells[piece.col];
     addImage(cell, piece.player, piece.type);
   }
+}
+
+function addFirstRowPieces(result, row, player) {
+  result.push(new Piece(row, 0, ROOK, player));
+  result.push(new Piece(row, 1, KNIGHT, player));
+  result.push(new Piece(row, 2, BISHOP, player));
+  result.push(new Piece(row, 3, KING, player));
+  result.push(new Piece(row, 4, QUEEN, player));
+  result.push(new Piece(row, 5, BISHOP, player));
+  result.push(new Piece(row, 6, KNIGHT, player));
+  result.push(new Piece(row, 7, ROOK, player));
+}
+
+function getInitialPieces() {
+  let result = [];
+
+  addFirstRowPieces(result, 0, WHITE_PLAYER);
+  addFirstRowPieces(result, 7, BLACK_PLAYER);
+
+  for (let i = 0; i < BOARD_SIZE; i++) {
+    result.push(new Piece(1, i, PAWN, WHITE_PLAYER));
+    result.push(new Piece(6, i, PAWN, BLACK_PLAYER));
+  }
+  return result;
+}
+
+function initGame() {
+  // Create list of pieces (32 total)
+  boardData = new BoardData(getInitialPieces());
+  createChessBoard(boardData);
 }
 
 window.addEventListener('load', initGame);
